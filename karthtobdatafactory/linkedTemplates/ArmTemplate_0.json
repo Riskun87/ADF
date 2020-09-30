@@ -371,6 +371,44 @@
 				"[concat(variables('factoryId'), '/datasets/InputBlobStorageData')]",
 				"[concat(variables('factoryId'), '/datasets/DataLakeGen2')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "InputBlobStorageData",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataLakeGen2",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Aggregate1"
+						}
+					],
+					"script": "source(output(\n\t\t{Overall rank} as string,\n\t\t{Country or region} as string,\n\t\tScore as string,\n\t\t{GDP per capita} as string,\n\t\t{Social support} as string,\n\t\t{Healthy life expectancy} as string,\n\t\t{Freedom to make life choices} as string,\n\t\tGenerosity as string,\n\t\t{Perceptions of corruption} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate({Country or region} = count()) ~> Aggregate1\nAggregate1 sink(input(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string,\n\t\tColumn_8 as string,\n\t\tColumn_9 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/InputBlobStorageData')]",
+				"[concat(variables('factoryId'), '/datasets/DataLakeGen2')]"
+			]
 		}
 	]
 }
