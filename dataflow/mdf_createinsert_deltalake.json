@@ -14,9 +14,9 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "DataLakeGen2",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "AzureDataLakeStorage2",
+						"type": "LinkedServiceReference"
 					},
 					"name": "sink1"
 				}
@@ -26,7 +26,7 @@
 					"name": "Aggregate1"
 				}
 			],
-			"script": "source(output(\n\t\t{Overall rank} as short,\n\t\t{Country or region} as string,\n\t\tScore as double,\n\t\t{GDP per capita} as double,\n\t\t{Social support} as double,\n\t\t{Healthy life expectancy} as double,\n\t\t{Freedom to make life choices} as double,\n\t\tGenerosity as double,\n\t\t{Perceptions of corruption} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate(groupBy({Overall rank}),\n\t{Country or region} = count()) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "source(output(\n\t\t{Overall rank} as short,\n\t\t{Country or region} as string,\n\t\tScore as double,\n\t\t{GDP per capita} as double,\n\t\t{Social support} as double,\n\t\t{Healthy life expectancy} as double,\n\t\t{Freedom to make life choices} as double,\n\t\tGenerosity as double,\n\t\t{Perceptions of corruption} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate(groupBy({Overall rank}),\n\t{Country or region} = count()) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\ttruncate: false,\n\tmergeSchema: false,\n\tvacuum: 0,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
