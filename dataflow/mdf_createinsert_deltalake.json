@@ -26,7 +26,7 @@
 					"name": "Aggregate1"
 				}
 			],
-			"script": "source(output(\n\t\t{Overall rank} as short,\n\t\t{Country or region} as string,\n\t\tScore as double,\n\t\t{GDP per capita} as double,\n\t\t{Social support} as double,\n\t\t{Healthy life expectancy} as double,\n\t\t{Freedom to make life choices} as double,\n\t\tGenerosity as double,\n\t\t{Perceptions of corruption} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate(groupBy({Overall rank}),\n\t{Country or region} = count()) ~> Aggregate1\nAggregate1 sink(input(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string,\n\t\tColumn_8 as string,\n\t\tColumn_9 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "source(output(\n\t\t{Overall rank} as short,\n\t\t{Country or region} as string,\n\t\tScore as double,\n\t\t{GDP per capita} as double,\n\t\t{Social support} as double,\n\t\t{Healthy life expectancy} as double,\n\t\t{Freedom to make life choices} as double,\n\t\tGenerosity as double,\n\t\t{Perceptions of corruption} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate(groupBy({Overall rank}),\n\t{Country or region} = count()) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
