@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"AzureDataLakeStorage2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureDataLakeStorage2'"
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://karthtobdatalakegen2.dfs.core.windows.net"
@@ -72,6 +76,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureDataLakeStorage2_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataLakeGen2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -84,41 +101,14 @@
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "AzureBlobFSLocation"
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "stagingdata"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
 					"quoteChar": "\""
 				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
@@ -190,190 +180,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Overall rank",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 1
-										}
-									},
-									{
-										"source": {
-											"name": "Country or region",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 2
-										}
-									},
-									{
-										"source": {
-											"name": "Score",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 3
-										}
-									},
-									{
-										"source": {
-											"name": "GDP per capita",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 4
-										}
-									},
-									{
-										"source": {
-											"name": "Social support",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 5
-										}
-									},
-									{
-										"source": {
-											"name": "Healthy life expectancy",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 6
-										}
-									},
-									{
-										"source": {
-											"name": "Freedom to make life choices",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 7
-										}
-									},
-									{
-										"source": {
-											"name": "Generosity",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 8
-										}
-									},
-									{
-										"source": {
-											"name": "Perceptions of corruption",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"type": "String",
-											"physicalType": "String",
-											"ordinal": 9
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "InputBlobStorageData",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DataLakeGen2",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/InputBlobStorageData')]",
-				"[concat(variables('factoryId'), '/datasets/DataLakeGen2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"name": "[concat(parameters('factoryName'), '/mdf_createinsert_deltalake')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -390,9 +197,9 @@
 					],
 					"sinks": [
 						{
-							"dataset": {
-								"referenceName": "DataLakeGen2",
-								"type": "DatasetReference"
+							"linkedService": {
+								"referenceName": "AzureDataLakeStorage2",
+								"type": "LinkedServiceReference"
 							},
 							"name": "sink1"
 						}
@@ -402,12 +209,54 @@
 							"name": "Aggregate1"
 						}
 					],
-					"script": "source(output(\n\t\t{Overall rank} as string,\n\t\t{Country or region} as string,\n\t\tScore as string,\n\t\t{GDP per capita} as string,\n\t\t{Social support} as string,\n\t\t{Healthy life expectancy} as string,\n\t\t{Freedom to make life choices} as string,\n\t\tGenerosity as string,\n\t\t{Perceptions of corruption} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate({Country or region} = count()) ~> Aggregate1\nAggregate1 sink(input(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string,\n\t\tColumn_8 as string,\n\t\tColumn_9 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+					"script": "source(output(\n\t\t{Overall rank} as short,\n\t\t{Country or region} as string,\n\t\tScore as double,\n\t\t{GDP per capita} as double,\n\t\t{Social support} as double,\n\t\t{Healthy life expectancy} as double,\n\t\t{Freedom to make life choices} as double,\n\t\tGenerosity as double,\n\t\t{Perceptions of corruption} as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 aggregate(groupBy({Overall rank}),\n\t{Country or region} = count()) ~> Aggregate1\nAggregate1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'delta',\n\tcontainer: 'stagingdata',\n\ttruncate: false,\n\tmergeSchema: false,\n\tvacuum: 0,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/InputBlobStorageData')]",
-				"[concat(variables('factoryId'), '/datasets/DataLakeGen2')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/createinsert_deltalake')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "mdf_createinsert_deltalake",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "mdf_createinsert_deltalake",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/mdf_createinsert_deltalake')]"
 			]
 		}
 	]
